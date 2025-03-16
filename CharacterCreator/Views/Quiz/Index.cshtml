@@ -1,0 +1,42 @@
+﻿@{
+    ViewData["Title"] = "Quiz";
+}
+@model CharacterCreator.Models.QuizModel
+
+<form asp-action="Index" asp-controller="Quiz" method="post">
+    <div class="form-group">
+        <label>What is the name of the tallest character?</label>
+        <input asp-for="@Model.Questions[0].UserAnswer" class="form-control p-3" /><br />
+    </div>
+    <div class="form-group">
+        <label>What is the name of the smallest character?</label>
+        <input asp-for="@Model.Questions[1].UserAnswer" class="form-control p-3" /><br />
+    </div>
+    <div class="form-group">
+        <label>What character was created earliest?</label>
+        <input asp-for="@Model.Questions[2].UserAnswer" class="form-control p-3" /><br />
+    </div>
+    <div class="form-group">
+        <label>What character was added to the website first?</label>
+        <input asp-for="@Model.Questions[3].UserAnswer" class="form-control p-3" /><br />
+    </div>
+    <div class="form-group">
+        <label>What character was added to the website most recently?</label>
+        <input asp-for="@Model.Questions[4].UserAnswer" class="form-control p-3" /><br />
+    </div>
+    <input type="submit" value="Submit Quiz" class="btn btn-danger" />
+
+</form>
+
+@if (ViewData["Checked"] as bool? == true)
+{
+    <div>
+        @foreach (var question in Model.Questions)
+        {
+            <p class="@(question.IsCorrect ? "text-success" : "text-danger")">
+                @(question.IsCorrect ? "You were right, " + question.UserAnswer + " was correct." : "You were wrong, " + question.CorrectAnswer + " was correct. :(")
+            </p>
+        }
+        <h2>You got @ViewData["Score"] out of @Model.Questions.Count correct!</h2>
+    </div>
+}

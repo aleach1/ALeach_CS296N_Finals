@@ -1,0 +1,44 @@
+﻿@model List<CharacterCreator.Models.Character>
+@{
+    ViewData["Title"] = "Characters";
+}
+
+<h1 class="text-center fw-bolder">Community Characters</h1>
+
+<form asp-action="Filter" asp-controller="Home" method="get">
+    <div class="form-group">
+        <label name="creator">Character's Creator:</label>
+        <input name="creator" class="form-control p-3" /><br />
+    </div>
+    <div class="form-group">
+        <label name="sort">Sort by:</label>
+        <select class="form-control" name="sort">
+            <option value="Date">Date</option>
+            <option value="Height">Height</option>
+            <option value="Name">Name</option>
+        </select>
+    </div>
+    <input type="submit" value="Filter Characters" class="btn btn-danger" />
+</form>
+
+<br/> <hr /> <br/>
+
+@foreach (var character in Model)
+{
+    <div class="border border-secondary rounded">
+        <h2>Name: @character.Name</h2>
+        <h4>Backstory: @character.Backstory</h4>
+        <p>Motivation: @character.Motivation <br></p>
+        <p>Moral Alignment: @character.MoralAlignment <br></p>
+        <p>Height(cm): @character.Height <br></p>
+        <p>Weight(kg): @character.Weight <br></p>
+        <p>Physical Description: @character.PhysicalDescription <br></p>
+        <p><strong>Posted by:</strong> @(character.Account == null ? "Anonymous" : character.Account.Username) <div class="fst-italic small m-0"> @character.DateCreated.ToShortDateString()</div></p>
+    </div>
+    <br/>
+}
+
+<div class="container mt-lg-5">
+    <a href="@Url.Action("NewChar", "Home")" class="btn btn-danger">Create Your Own Character</a>
+</div>
+

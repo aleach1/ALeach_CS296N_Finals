@@ -1,0 +1,15 @@
+﻿@{
+    ViewData["Title"] = "Home Page";
+}
+
+<div class="text-center">
+    <h1 class="display-4">Character Creator</h1>
+    <p>This website is one where you can submit characters that you've created, and see characters that others have created.</p>
+
+    <!--Sub-page Links-->
+    <div class="navigation m-0">
+        <a href="@Url.Action("Characters", "Home")" class="btn btn-danger mr-2">View Community Characters</a>
+        <a href="@Url.Action("NewChar", "Home")" class="btn btn-danger mr-2">Create a new Character</a>
+    </div>
+</div>
+
