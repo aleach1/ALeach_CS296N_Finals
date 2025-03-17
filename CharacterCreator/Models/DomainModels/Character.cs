@@ -1,8 +1,11 @@
-﻿namespace CharacterCreator.Models
+﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+
+namespace CharacterCreator.Models
 {
     public class Character
     {
-        public int Id { get; set; }
+        public int CharacterId { get; set; }
 
         public string Name { get; set; }
 
@@ -20,7 +23,9 @@
 
         public DateTime DateCreated { get; set; }
 
-        public User? Account { get; set; }
+        public AppUser Poster { get; set; }
+
+        public ICollection<Comment> Comments { get; set; }
 
     }
 }

@@ -1,0 +1,35 @@
+﻿@model CommentViewModel
+@{
+    ViewData["Title"] = "Comment";
+}
+<div class="border border-secondary rounded">
+    <h2>Name: @Model.Character.Name</h2>
+    <h4>Backstory: @Model.Character.Backstory</h4>
+    <p>Motivation: @Model.Character.Motivation <br></p>
+    <p>Moral Alignment: @Model.Character.MoralAlignment <br></p>
+    <p>Height(cm): @Model.Character.Height <br></p>
+    <p>Weight(kg): @Model.Character.Weight <br></p>
+    <p>Physical Description: @Model.Character.PhysicalDescription <br></p>
+    <p><strong>Posted by:</strong> @Model.Character.Poster.UserName <div class="fst-italic small m-0"> @Model.Character.DateCreated.ToShortDateString()</div></p>
+</div>
+<br />
+
+<h1 class="text-center fw-bolder">Comment</h1>
+
+<form asp-action="PostComment" asp-controller="Home" method="post">
+    <div class="form-group">
+        <label asp-for="Comment.CommentText">Comment Text:</label>
+        <span asp-validation-for="Comment.CommentText"></span>
+        <input asp-for="Comment.CommentText" class="form-control p-3" required /><br />
+    </div>
+    <div class="form-group">
+        <input type="hidden" asp-for="Comment.CharacterId" value="@Model.Character.CharacterId" />
+        <input type="submit" value="Submit Story" class="btn btn-danger" />
+    </div>
+</form>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

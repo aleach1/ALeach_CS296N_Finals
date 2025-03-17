@@ -8,17 +8,15 @@ using System.Diagnostics;
 
 namespace CharacterCreator.Controllers
 {
-    public class HomeController : Controller
+    public class PostController : Controller
     {
 
-        private readonly ILogger<HomeController> _logger;
         private UserManager<AppUser> userManager;
         private SignInManager<AppUser> signInManager;
         ICharacterRepository _repo;
-        public HomeController(ILogger<HomeController> logger, ICharacterRepository repo, UserManager<AppUser> usrMngr,
+        public PostController(ILogger<HomeController> logger, ICharacterRepository repo, UserManager<AppUser> usrMngr,
             SignInManager<AppUser> signInMngr)
         {
-            _logger = logger;
             _repo = repo;
             userManager = usrMngr;
             signInManager = signInMngr;
@@ -26,63 +24,20 @@ namespace CharacterCreator.Controllers
 
         public IActionResult Index()
         {
-            return View();
+            var posts = _repo.GetAllChars();
+            return View(posts);
         }
 
-        public IActionResult Characters()
-        {
-            var chars = _repo.GetAllChars();
-            return View(chars);
-        }
-
-        [HttpGet]
-        public IActionResult Filter(string creator, string sort)
-        {
-            if (sort == "Name")
-            {
-                var chars = _repo.GetAllChars()
-                    .Where(s => creator == null ||(s.Poster != null && s.Poster.UserName == creator))
-                    .OrderBy(s => s.Name)
-                    .ToList();
-                return View("Characters", chars);
-            }
-            else if (sort == "Date")
-            {
-                var chars = _repo.GetAllChars()
-                    .Where(s => creator == null || (s.Poster != null && s.Poster.UserName == creator))
-                    .OrderBy(s => s.DateCreated)
-                    .ToList();
-                return View("Characters", chars);
-            }
-            else if (sort == "Height")
-            {
-                var chars = _repo.GetAllChars()
-                    .Where(s => creator == null || (s.Poster != null && s.Poster.UserName == creator))
-                    .OrderBy(s => s.Height)
-                    .ToList();
-                return View("Characters", chars);
-            }
-            else
-            {
-                var chars = _repo.GetAllChars()
-                    .Where(s => creator == null || (s.Poster != null && s.Poster.UserName == creator))
-                    .ToList();
-                return View("Characters", chars);
-            }
-
-
-        }
-
-        public IActionResult NewChar()
+        [Authorize]
+        public IActionResult NewPost()
         {
             return View();
         }
 
         [Authorize]
         [HttpPost]
-        public async Task<IActionResult> NewChar(Character newChar)
+        public async Task<IActionResult> NewPost(Post newPost)
         {
-
             // send user to login if not logged in
             if (!signInManager.IsSignedIn(User))
             {
@@ -91,20 +46,20 @@ namespace CharacterCreator.Controllers
             }
 
             // get appuser for current user
-            newChar.Poster = userManager.GetUserAsync(User).Result;
+            newPost.Poster = userManager.GetUserAsync(User).Result;
             if (userManager != null)
             {
-                newChar.Poster = await userManager.GetUserAsync(User);
+                newPost.Poster = await userManager.GetUserAsync(User);
             }
             if (ModelState.IsValid)
             {
-                if (await _repo.NewCharAsync(newChar) > 0)
+                if (await _repo.NewPostAsync(newPost) > 0)
                 {
                     return RedirectToAction("Index");
                 }
                 else
                 {
-                    ViewBag.ErrorMessage = "There was an error saving the character.";
+                    ViewBag.ErrorMessage = "There was an error saving the post.";
                     return View();
                 }
             }
@@ -112,9 +67,9 @@ namespace CharacterCreator.Controllers
         }
 
         [Authorize]
-        public IActionResult Comment(int charId)
+        public IActionResult Comment(int postId)
         {
-            CommentViewModel CommentVM = new CommentViewModel { Character = _repo.GetCharById(charId) };
+            CommentViewModel CommentVM = new CommentViewModel { Post = _repo.GetPostById(postId) };
             return View(CommentVM);
         }
 
@@ -153,13 +108,6 @@ namespace CharacterCreator.Controllers
                 return View();
             }
 
-        }
-
-
-        [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-        public IActionResult Error()
-        {
-            return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
         }
     }
 }

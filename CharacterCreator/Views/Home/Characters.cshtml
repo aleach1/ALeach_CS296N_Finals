@@ -33,7 +33,26 @@
         <p>Height(cm): @character.Height <br></p>
         <p>Weight(kg): @character.Weight <br></p>
         <p>Physical Description: @character.PhysicalDescription <br></p>
-        <p><strong>Posted by:</strong> @(character.Account == null ? "Anonymous" : character.Account.Username) <div class="fst-italic small m-0"> @character.DateCreated.ToShortDateString()</div></p>
+        <p><strong>Posted by:</strong> @character.Poster.UserName <div class="fst-italic small m-0"> @character.DateCreated.ToShortDateString()</div></p>
+        @foreach (Comment comment in character.Comments)
+        {
+            <br />
+            <div class="border border-secondary rounded">
+                <p>@comment.CommentText</p>
+                <p>
+                    <strong>Posted by:</strong> @if (comment.Commenter.UserName != null)
+                    {
+                        <span>@comment.Commenter.UserName</span>
+                    }
+                    else
+                    {
+                        <span>anonymous</span>
+                    }
+                    <div class="fst-italic small m-0"> @comment.DatePosted.ToShortDateString()</div>
+                </p>
+            </div>
+        }
+        <a asp-action="PostComment" asp-route-storyId="@character.CharacterId" class="btn btn-outline-danger">Post Comment</a>
     </div>
     <br/>
 }

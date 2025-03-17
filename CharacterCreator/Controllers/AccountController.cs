@@ -1,41 +1,94 @@
-﻿using CharacterCreator.Data;
-using CharacterCreator.Models;
+﻿using CharacterCreator.Models;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using System.Diagnostics;
 
 namespace CharacterCreator.Controllers
 {
     public class AccountController : Controller
     {
+        private UserManager<AppUser> userManager;
+        private SignInManager<AppUser> signInManager;
 
-        ICharacterRepository _repo;
-
-        public AccountController(ICharacterRepository repo)
+        public AccountController(UserManager<AppUser> userMngr,
+            SignInManager<AppUser> signInMngr)
         {
-            _repo = repo;
+            userManager = userMngr;
+            signInManager = signInMngr;
         }
 
-        public IActionResult Index()
+        [HttpGet]
+        public IActionResult Registration()
         {
             return View();
         }
 
         [HttpPost]
-        public IActionResult Index(User newUser)
+        public async Task<IActionResult> Registration(RegisterViewModel model)
         {
+            if (ModelState.IsValid)
+            {
+                var user = new AppUser { UserName = model.Username };
+                var result = await userManager.CreateAsync(user, model.Password);
 
-            if (_repo.NewUser(newUser) > 0)
-            {
-                ViewBag.Success = "text-success";
-                ViewBag.Message = "Your account was successfully saved.";
-                return View();
+                if (result.Succeeded)
+                {
+                    await signInManager.SignInAsync(user, isPersistent: false);
+                    return RedirectToAction("Index", "Home");
+                }
+                else
+                {
+                    foreach (var error in result.Errors)
+                    {
+                        ModelState.AddModelError("", error.Description);
+                    }
+                }
             }
-            else
+            return View(model);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Logout()
+        {
+            await signInManager.SignOutAsync();
+            return RedirectToAction("Index", "Home");
+        }
+
+        [HttpGet]
+        public IActionResult Login(string returnURL = "")
+        {
+            var model = new LoginViewModel { ReturnUrl = returnURL };
+            return View(model);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Login(LoginViewModel model)
+        {
+            if (ModelState.IsValid)
             {
-                ViewBag.Success = "text-danger";
-                ViewBag.Message = "There was an error saving the account. Your username may have been invalid.";
-                return View();
+                var result = await signInManager.PasswordSignInAsync(
+                    model.Username, model.Password, isPersistent: model.RememberMe,
+                    lockoutOnFailure: false);
+
+                if (result.Succeeded)
+                {
+                    if (!string.IsNullOrEmpty(model.ReturnUrl) &&
+                        Url.IsLocalUrl(model.ReturnUrl))
+                    {
+                        return Redirect(model.ReturnUrl);
+                    }
+                    else
+                    {
+                        return RedirectToAction("Index", "Home");
+                    }
+                }
             }
+            ModelState.AddModelError("", "Invalid username/password.");
+            return View(model);
+        }
+
+        public ViewResult AccessDenied()
+        {
+            return View();
         }
     }
 }
