@@ -45,8 +45,8 @@
                         {
                             <li class="nav-item">
                                 <form method="post" asp-action="Logout" asp-controller="Account">
-                                    <input type="submit" value="Log Out" class="btn btn-outline-info" />
-                                    <span class="text-info">@User.Identity.Name</span>
+                                    <input type="submit" value="Log Out" class="btn btn-outline-danger" />
+                                    <span class="text-danger">@User.Identity.Name</span>
                                 </form>
                             </li>
                         }
@@ -56,12 +56,12 @@
                             var action = ViewContext.RouteData.Values["action"]?.ToString();
                             // Anonymous User - register link and log in button
                             <li class="nav-item">
-                                <a class="nav-link text-info" asp-controller="Account" asp-action="Registration">
+                                <a class="nav-link text-danger" asp-controller="Account" asp-action="Registration">
                                     <span class="fas fa-edit"> &nbsp; Register</span>
                                 </a>
                             </li>
                             <li class="nav-item">
-                                <a asp-action="Login" asp-controller="Account" class="btn btn-outline-info">
+                                <a asp-action="Login" asp-controller="Account" class="btn btn-outline-danger">
                                     Log in
                                 </a>
                             </li>
@@ -85,6 +85,7 @@
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>

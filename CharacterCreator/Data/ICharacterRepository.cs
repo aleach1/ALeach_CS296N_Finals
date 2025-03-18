@@ -7,6 +7,7 @@ namespace CharacterCreator.Data
         public Character GetCharById(int id);
         public Post GetPostById(int id);
         public List<Character> GetAllChars();
+        public List<Post> GetAllPosts();
         public Task<int> NewCharAsync(Character model);
         public Task<int> NewPostAsync(Post model);
         public Task<int> DeletePostsAsync(AppUser appUser);

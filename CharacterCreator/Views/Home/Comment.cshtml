@@ -16,7 +16,7 @@
 
 <h1 class="text-center fw-bolder">Comment</h1>
 
-<form asp-action="PostComment" asp-controller="Home" method="post">
+<form asp-action="Comment" asp-controller="Home" method="post">
     <div class="form-group">
         <label asp-for="Comment.CommentText">Comment Text:</label>
         <span asp-validation-for="Comment.CommentText"></span>
@@ -24,7 +24,7 @@
     </div>
     <div class="form-group">
         <input type="hidden" asp-for="Comment.CharacterId" value="@Model.Character.CharacterId" />
-        <input type="submit" value="Submit Story" class="btn btn-danger" />
+        <input type="submit" value="Submit Comment" class="btn btn-danger" />
     </div>
 </form>
 

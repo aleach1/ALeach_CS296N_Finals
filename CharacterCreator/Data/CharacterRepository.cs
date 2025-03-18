@@ -23,6 +23,16 @@ namespace CharacterCreator.Data
             return chars;
         }
 
+        //return all posts from repository
+        public List<Post> GetAllPosts()
+        {
+            var posts = _context.Posts
+                .Include(x => x.Poster)
+                .Include(x => x.Comments)
+                .ThenInclude(comment => comment.Commenter)
+                .ToList<Post>();
+            return posts;
+        }
 
         //return a character with a specific id
         public Character GetCharById(int id)

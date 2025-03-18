@@ -22,7 +22,7 @@
 
 <h1 class="text-center fw-bolder">Comment</h1>
 
-<form asp-action="PostComment" asp-controller="Home" method="post">
+<form asp-action="Comment" asp-controller="Post" method="post">
     <div class="form-group">
         <label asp-for="Comment.CommentText">Comment Text:</label>
         <span asp-validation-for="Comment.CommentText"></span>

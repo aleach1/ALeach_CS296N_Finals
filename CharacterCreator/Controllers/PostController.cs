@@ -24,7 +24,7 @@ namespace CharacterCreator.Controllers
 
         public IActionResult Index()
         {
-            var posts = _repo.GetAllChars();
+            var posts = _repo.GetAllPosts();
             return View(posts);
         }
 
@@ -91,8 +91,6 @@ namespace CharacterCreator.Controllers
             {
                 newComment.Commenter = await userManager.GetUserAsync(User);
             }
-            if (ModelState.IsValid)
-            {
                 if (await _repo.NewCommentAsync(newComment) > 0)
                 {
                     return RedirectToAction("Index");
@@ -102,11 +100,6 @@ namespace CharacterCreator.Controllers
                     ViewBag.ErrorMessage = "There was an error saving the comment.";
                     return View();
                 }
-            }
-            else
-            {
-                return View();
-            }
 
         }
     }

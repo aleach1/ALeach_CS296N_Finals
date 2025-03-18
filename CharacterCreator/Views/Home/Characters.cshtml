@@ -52,12 +52,12 @@
                 </p>
             </div>
         }
-        <a asp-action="PostComment" asp-route-storyId="@character.CharacterId" class="btn btn-outline-danger">Post Comment</a>
+        <a asp-action="Comment" asp-route-charId="@character.CharacterId" class="btn btn-outline-danger">Post Comment</a>
     </div>
     <br/>
 }
 
 <div class="container mt-lg-5">
-    <a href="@Url.Action("NewChar", "Home")" class="btn btn-danger">Create Your Own Character</a>
+    <a href="@Url.Action("NewChar", "Home")"><img class="border border-danger rounded" src="/Images/create.png" height="40" /></a>
 </div>
 

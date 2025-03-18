@@ -108,7 +108,10 @@ namespace CharacterCreator.Controllers
                     return View();
                 }
             }
-            else { return View(); }
+            else {
+                ViewBag.ErrorMessage = "The model state was invalid.";
+                return View();
+            }
         }
 
         [Authorize]
@@ -136,8 +139,6 @@ namespace CharacterCreator.Controllers
             {
                 newComment.Commenter = await userManager.GetUserAsync(User);
             }
-            if (ModelState.IsValid)
-            {
                 if (await _repo.NewCommentAsync(newComment) > 0)
                 {
                     return RedirectToAction("Index");
@@ -147,11 +148,6 @@ namespace CharacterCreator.Controllers
                     ViewBag.ErrorMessage = "There was an error saving the comment.";
                     return View();
                 }
-            }
-            else
-            {
-                return View();
-            }
 
         }
 

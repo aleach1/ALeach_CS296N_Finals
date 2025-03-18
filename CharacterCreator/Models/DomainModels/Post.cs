@@ -19,8 +19,8 @@ namespace CharacterCreator.Models
         [DataType(DataType.Date)]
         public DateTime DatePosted { get; set; }
 
-        public AppUser Poster { get; set; }
+        public AppUser? Poster { get; set; }
 
-        public ICollection<Comment> Comments { get; set; }
+        public ICollection<Comment>? Comments { get; set; }
     }
 }

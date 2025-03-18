@@ -14,7 +14,7 @@ namespace CharacterCreator.Models
 
         [DataType(DataType.Date)]
         public DateTime DatePosted { get; set; }
-        public AppUser Commenter { get; set; }
+        public AppUser? Commenter { get; set; }
         public int? CharacterId { get; set; }  // FK to cause cascade delete
         public int? PostId { get; set; }
     }
