@@ -91,7 +91,8 @@ namespace CharacterCreator.Migrations
 
                     b.Property<string>("Backstory")
                         .IsRequired()
-                        .HasColumnType("longtext");
+                        .HasMaxLength(500)
+                        .HasColumnType("varchar(500)");
 
                     b.Property<DateTime>("DateCreated")
                         .HasColumnType("datetime(6)");
@@ -107,7 +108,8 @@ namespace CharacterCreator.Migrations
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnType("longtext");
+                        .HasMaxLength(50)
+                        .HasColumnType("varchar(50)");
 
                     b.Property<string>("PhysicalDescription")
                         .HasColumnType("longtext");

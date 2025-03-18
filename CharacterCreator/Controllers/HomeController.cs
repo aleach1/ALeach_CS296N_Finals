@@ -73,6 +73,7 @@ namespace CharacterCreator.Controllers
 
         }
 
+        [Authorize]
         public IActionResult NewChar()
         {
             return View();

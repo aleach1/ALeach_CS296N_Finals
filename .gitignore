@@ -398,3 +398,5 @@ FodyWeavers.xsd
 
 # JetBrains Rider
 *.sln.iml
+/CharacterCreator/appsettings.Development.json
+/CharacterCreator/appsettings.Production.json
