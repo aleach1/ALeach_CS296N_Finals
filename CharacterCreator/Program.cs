@@ -1,5 +1,7 @@
 using CelesteMountain.Data;
 using CharacterCreator.Data;
+using CharacterCreator.Models;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using System.Reflection;
 
@@ -16,6 +18,14 @@ builder.Services.AddDbContext<CharacterCreatorContext>(options =>
 // Register the repository and repository interface
 builder.Services.AddTransient<ICharacterRepository, CharacterRepository>();
 
+// Add services to the container.
+builder.Services.AddControllersWithViews();
+
+//Add identity
+builder.Services.AddIdentity<AppUser, IdentityRole>()
+  .AddEntityFrameworkStores<CharacterCreatorContext>()
+  .AddDefaultTokenProviders();
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -31,6 +41,7 @@ app.UseStaticFiles();
 
 app.UseRouting();
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllerRoute(
@@ -41,8 +52,9 @@ app.MapControllerRoute(
 //get DbContext seed data
 using (var scope = app.Services.CreateScope())
 {
+    await SeedUsers.CreateAdminUser(scope.ServiceProvider);
     var dbContext = scope.ServiceProvider.GetRequiredService<CharacterCreatorContext>();
-    SeedData.Seed(dbContext);
+    SeedData.Seed(dbContext, scope.ServiceProvider);
 
 }
 

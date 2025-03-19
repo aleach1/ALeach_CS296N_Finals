@@ -1,0 +1,50 @@
+﻿@model List<CharacterCreator.Models.Post>
+@{
+    ViewData["Title"] = "Posts";
+}
+
+<h1 class="text-center fw-bolder">Non-Character Posts</h1>
+
+@foreach (var post in Model)
+{
+    <div class="container mt-5">
+        <h2>@post.Title</h2>
+        <p>@post.Text <br></p>
+        <p>
+            <strong>Posted by:</strong> @if (post.Poster.UserName != null)
+            {
+                <span>@post.Poster.UserName</span>
+            }
+            else
+            {
+                <span>anonymous</span>
+            }
+            <div class="fst-italic small m-0"> @post.DatePosted.ToShortDateString()</div>
+        </p>
+        <br />
+        @foreach (Comment comment in post.Comments)
+        {
+            <br />
+            <div class="container ms-5">
+                <p>@comment.CommentText</p>
+                <p>
+                    <strong>Posted by:</strong> @if (comment.Commenter.UserName != null)
+                    {
+                        <span>@comment.Commenter.UserName</span>
+                    }
+                    else
+                    {
+                        <span>anonymous</span>
+                    }
+                    <div class="fst-italic small m-0"> @comment.DatePosted.ToShortDateString()</div>
+                </p>
+            </div>
+        }
+        <a asp-action="Comment" asp-route-postId="@post.PostId" class="btn btn-outline-danger">Post Comment</a>
+    </div>
+}
+
+<div class="container mt-lg-5">
+    <a href="@Url.Action("NewPost", "Post")" class="btn btn-danger">Make a Post</a>
+</div>
+

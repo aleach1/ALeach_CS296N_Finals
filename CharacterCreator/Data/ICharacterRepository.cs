@@ -5,9 +5,13 @@ namespace CharacterCreator.Data
     public interface ICharacterRepository
     {
         public Character GetCharById(int id);
+        public Post GetPostById(int id);
         public List<Character> GetAllChars();
-        public List<User> GetAllUsers();
-        public int NewChar(Character model);
-        public int NewUser(User model);
+        public List<Post> GetAllPosts();
+        public Task<int> NewCharAsync(Character model);
+        public Task<int> NewPostAsync(Post model);
+        public Task<int> DeletePostsAsync(AppUser appUser);
+        public Task<int> DeleteCharactersAsync(AppUser appUser);
+        public Task<int> NewCommentAsync(Comment model);
     }
 }

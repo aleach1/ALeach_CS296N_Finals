@@ -16,57 +16,103 @@ namespace CharacterCreator.Data
         public List<Character> GetAllChars()
         {
             var chars = _context.Characters
-                .Include(character => character.Account)
+                .Include(character => character.Poster)
+                .Include(character => character.Comments)
+                .ThenInclude(comment => comment.Commenter)
                 .ToList<Character>();
             return chars;
         }
 
-        //return all Users from repository
-        public List<User> GetAllUsers()
+        //return all posts from repository
+        public List<Post> GetAllPosts()
         {
-            var users = _context.Users
-                .ToList<User>();
-            return users;
+            var posts = _context.Posts
+                .Include(x => x.Poster)
+                .Include(x => x.Comments)
+                .ThenInclude(comment => comment.Commenter)
+                .ToList<Post>();
+            return posts;
         }
 
         //return a character with a specific id
         public Character GetCharById(int id)
         {
             var chars = _context.Characters
-              .Where(chars => chars.Id == id)
+              .Where(chars => chars.CharacterId == id)
+                .Include(character => character.Poster)
+                .Include(character => character.Comments)
+                .ThenInclude(comment => comment.Commenter)
               .SingleOrDefault();
             return chars;
         }
 
-        //adds a character to the database and returns a positive value if succussful. Validates user account.
-        public int NewChar(Character model)
+        //return a post with a specific id
+        public Post GetPostById(int id)
         {
-            if (_context.Users.Find(model.Account.Username).Password == model.Account.Password)
-            {
-                model.Account = _context.Users.Find(model.Account.Username);
-            }
-            else
-            {
-                model.Account = null;
-            }
-            model.DateCreated = DateTime.Now;
-            _context.Characters.Add(model);
-            return _context.SaveChanges();
+            var posts = _context.Posts
+              .Where(x => x.PostId == id)
+                .Include(character => character.Poster)
+                .Include(character => character.Comments)
+                .ThenInclude(comment => comment.Commenter)
+              .SingleOrDefault();
+            return posts;
         }
 
-        //adds a user to the database and returns a positive value if succussful. Validates unique user so db doesn't crash.
-        public int NewUser(User model)
+
+        //adds a character to the database and returns a positive value if succussful. Validates user account.
+        public async Task<int> NewCharAsync(Character model)
         {
-            if (_context.Users.Find(model.Username) == null)
-            {
-                _context.Users.Add(model);
-                return _context.SaveChanges();
-            }
-            else
-            {
-                return 0;
-            }
-            
+            model.DateCreated = DateTime.Now;
+            _context.Characters.Add(model);
+            Task<int> task  = _context.SaveChangesAsync();
+            int result = await task;
+            return result;
+        }
+
+        //adds a Post to the database and returns a positive value if succussful. Validates user account.
+        public async Task<int> NewPostAsync(Post model)
+        {
+            model.DatePosted = DateTime.Now;
+            _context.Posts.Add(model);
+            Task<int> task = _context.SaveChangesAsync();
+            int result = await task;
+            return result;
+        }
+
+        //Deletes all Posts from a user
+        public async Task<int> DeletePostsAsync(AppUser appUser)
+        {
+            var story = _context.Posts
+              .Where(story => story.Poster == appUser)
+              .Include(story => story.Poster)
+              .ToList();
+            _context.Posts.RemoveRange(story);
+            Task<int> task = _context.SaveChangesAsync();
+            int result = await task;
+            return result;
+        }
+
+        //Deletes all characters from a user
+        public async Task<int> DeleteCharactersAsync(AppUser appUser)
+        {
+            var story = _context.Characters
+              .Where(story => story.Poster == appUser)
+              .Include(story => story.Poster)
+              .ToList();
+            _context.Characters.RemoveRange(story);
+            Task<int> task = _context.SaveChangesAsync();
+            int result = await task;
+            return result;
+        }
+
+        //Adds A comment to the database
+        public async Task<int> NewCommentAsync(Comment model)
+        {
+            model.DatePosted = DateTime.Now;
+            _context.Comments.Add(model);
+            Task<int> task = _context.SaveChangesAsync();
+            int result = await task;
+            return result;
         }
     }
 }

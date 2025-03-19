@@ -1,44 +1,49 @@
 ﻿@model CharacterCreator.Models.Character
 
-<p class="text-danger">If you enter the wrong account password, your character will be submitted as anonymous.</p>
-<span class="text-danger">@ViewBag.ErrorMessage</span>
+@ViewBag.ErrorMessage
 
 <form asp-action="NewChar" asp-controller="Home" method="post">
     <div class="form-group">
-        <label>Name:</label>
+        <label asp-for="Name">Name:</label>
+        <span asp-validation-for="Name"></span>
         <input asp-for="Name" class="form-control p-3" required /><br />
     </div>
     <div class="form-group">
-        <label>Backstory:</label>
+        <label asp-for="Backstory">Backstory:</label>
+        <span asp-validation-for="Backstory"></span>
         <input asp-for="Backstory" class="form-control p-3" rows="3" required /><br />
     </div>
     <div class="form-group">
-        <label>Motivation:</label>
+        <label asp-for="Motivation">Motivation:</label>
+        <span asp-validation-for="Motivation"></span>
         <input asp-for="Motivation" class="form-control p-3"  /><br />
     </div>
     <div class="form-group">
-        <label>Moral Alignment:</label>
+        <label asp-for="MoralAlignment">Moral Alignment:</label>
+        <span asp-validation-for="MoralAlignment"></span>
         <input asp-for="MoralAlignment" class="form-control p-3"  /><br />
     </div>
     <div class="form-group">
-        <label>Height(cm):</label>
+        <label asp-for="Height">Height(cm):</label>
+        <span asp-validation-for="Height"></span>
         <input type="number" asp-for="Height" class="form-control p-3" required /><br />
     </div>
     <div class="form-group">
-        <label>Weight(kg):</label>
+        <label asp-for="Weight">Weight(kg):</label>
+        <span asp-validation-for="Weight"></span>
         <input type="number" asp-for="Weight" class="form-control p-3" required /><br />
     </div>
     <div class="form-group">
-        <label>Physical Description:</label>
+        <label asp-for="PhysicalDescription">Physical Description:</label>
+        <span asp-validation-for="PhysicalDescription"></span>
         <input asp-for="PhysicalDescription" class="form-control p-3"  /><br />
     </div>
-    <div class="form-group">
-        <label>Username(Can submit as anonymous):</label>
-        <input asp-for="Account.Username" class="form-control p-3" /><br />
-    </div>
-    <div class="form-group">
-        <label>Password:</label>
-        <input asp-for="Account.Password" class="form-control p-3" /><br />
-    </div>
-    <input type="submit" value="Submit Story" class="btn btn-danger" />
+    <input type="submit" value="Submit Character" class="btn btn-danger" />
 </form>
+
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

@@ -2,25 +2,29 @@
 using System.Runtime.Intrinsics.X86;
 using System;
 using CharacterCreator.Data;
+using Microsoft.AspNetCore.Identity;
 
 namespace CelesteMountain.Data
 {
     public class SeedData
 
     {
-        public static void Seed(CharacterCreatorContext context)
+        public static void Seed(CharacterCreatorContext context, IServiceProvider provider)
         {
             if (!context.Characters.Any())  // this is to prevent adding duplicate data
             {
-                // Create User objects
-                User account1 = new User { Username = "Tolkien", Password = "Password1" };
-                User account2 = new User { Username = "Cuttlefish", Password = "Password1" };
-                User account3 = new User { Username = "NoviceWriter", Password = "Password1" };
 
                 // Queue up user objects to be saved to the DB
-                context.Users.Add(account1);
-                context.Users.Add(account2);
-                context.Users.Add(account3);
+                var userManager = provider
+                    .GetRequiredService<UserManager<AppUser>>();
+
+                const string SECRET_PASSWORD = "Secret!123";
+                AppUser account1 = new AppUser { UserName = "Tolkien" };
+                var result = userManager.CreateAsync(account1, SECRET_PASSWORD);
+                AppUser account2 = new AppUser { UserName = "Cuttlefish" };
+                result = userManager.CreateAsync(account2, SECRET_PASSWORD);
+                AppUser account3 = new AppUser { UserName = "NoviceWriter" };
+                result = userManager.CreateAsync(account3, SECRET_PASSWORD);
                 context.SaveChanges();  // Saving adds User to User objects
 
                 Character character = new Character
@@ -35,9 +39,11 @@ namespace CelesteMountain.Data
                     Weight = 63000,
                     PhysicalDescription = "He is a dragon. Looks like a dragon.",
                     DateCreated = DateTime.Parse("09/21/1937"),
-                    Account = account1
+                    Poster = account1
                 };
                 context.Characters.Add(character);  // queues up a character to be added to the DB
+
+
 
                 character = new Character
                 {
@@ -53,9 +59,11 @@ namespace CelesteMountain.Data
                     "outline, and is thinly built. Klein also has a distinct scholarly air to him. His refined aura is " +
                     "further reinforced by the valuable suits he dressed with and the canes he held on all occasions.",
                     DateCreated = DateTime.Parse("04/01/2018"),
-                    Account = account2
+                    Poster = account2
                 };
                 context.Characters.Add(character);  // queues up a character to be added to the DB
+
+
 
                 character = new Character
                 {
@@ -67,9 +75,10 @@ namespace CelesteMountain.Data
                     Weight = 90,
                     PhysicalDescription = "He just looks too cool.",
                     DateCreated = DateTime.Parse("12/06/2024"),
-                    Account = account3
+                    Poster = account3
                 };
                 context.Characters.Add(character);  // queues up a character to be added to the DB
+
 
                 character = new Character
                 {
@@ -81,9 +90,11 @@ namespace CelesteMountain.Data
                     Weight = 130,
                     PhysicalDescription = "He just looks too evil.",
                     DateCreated = DateTime.Parse("12/06/2024"),
-                    Account = account3
+                    Poster = account3
                 };
                 context.Characters.Add(character);  // queues up a character to be added to the DB
+
+                
 
                 character = new Character
                 {
@@ -96,12 +107,107 @@ namespace CelesteMountain.Data
                     Weight = 45,
                     PhysicalDescription = "Killua has spiky silver hair, very pale skin, and blue eyes.",
                     DateCreated = DateTime.Parse("04/06/1998"),
-                    Account = null
+                    Poster = account1
                 };
                 context.Characters.Add(character);  // queues up a character to be added to the DB
 
-                context.SaveChanges(); // stores all the reviews in the DB
+                context.SaveChanges(); // stores all the characters in the DB
+                
+                Comment comment = new Comment
+                {
+                    CommentText = "This character seems kind of like a dragon.",
+                    DatePosted = DateTime.Parse("03/17/2025"),
+                    Commenter = account2,
+                    CharacterId = 1
+                };
+                context.Comments.Add(comment); // queues up a comment to add to db
 
+                comment = new Comment
+                {
+                    CommentText = "This guy seems very cool. I would enjoy reading a story about him.",
+                    DatePosted = DateTime.Parse("03/17/2025"),
+                    Commenter = account2,
+                    CharacterId = 3
+                };
+                context.Comments.Add(comment);
+
+                comment = new Comment
+                {
+                    CommentText = "This guy seems awful. Can't wait to see cool guy triumph over him.",
+                    DatePosted = DateTime.Parse("03/17/2025"),
+                    Commenter = account1,
+                    CharacterId = 4
+                };
+                context.Comments.Add(comment);
+
+                context.SaveChanges(); // stores all the comments in the DB
+            }
+
+            if (!context.Posts.Any())
+            {
+                // Queue up user objects to be saved to the DB
+                var userManager = provider
+                    .GetRequiredService<UserManager<AppUser>>();
+
+                const string SECRET_PASSWORD = "Secret!123";
+                AppUser account1 = new AppUser { UserName = "Person1" };
+                var result = userManager.CreateAsync(account1, SECRET_PASSWORD);
+                AppUser account2 = new AppUser { UserName = "Person2" };
+                result = userManager.CreateAsync(account2, SECRET_PASSWORD);
+                AppUser account3 = new AppUser { UserName = "Person3" };
+                result = userManager.CreateAsync(account3, SECRET_PASSWORD);
+                context.SaveChanges();  // Saving adds User to User objects
+
+                Post post = new Post
+                {
+                    Title = "How should I make non-humanoid sapient creatures?",
+                    Text = "I want to make non-humanoid sapient characters but I'm worried that I'll just write a human and will leave it's non-human traits out of it's backstory",
+                    DatePosted = DateTime.Parse("03/16/2025"),
+                    Poster = account3
+                };
+                context.Posts.Add(post); //Queuing a post to add to db
+
+
+                post = new Post
+                {
+                    Title = "First time making a post here",
+                    Text = "I am making a post for the very first time. Everybody congratulate me.",
+                    DatePosted = DateTime.Parse("03/16/2025"),
+                    Poster = account1
+                };
+                context.Posts.Add(post); //Queuing a post to add to db
+
+
+                context.SaveChanges(); //Saves posts to database
+
+                Comment comment = new Comment
+                {
+                    CommentText =  "I feel like most non-humanoid sapient characters are that anyways so it's fine if you do it.",
+                    DatePosted =  DateTime.Parse("03/17/2025"),
+                    Commenter = account2,
+                    PostId = 1
+                };
+                context.Comments.Add(comment);//Queuing a comment to add to db
+
+                comment = new Comment
+                {
+                    CommentText = "Congrats on making a post!",
+                    DatePosted = DateTime.Parse("03/17/2025"),
+                    Commenter = account2,
+                    PostId = 2
+                };
+                context.Comments.Add(comment); //Queuing a comment to add to db
+
+                comment = new Comment
+                {
+                    CommentText = "Wow! first post. Congrats.",
+                    DatePosted = DateTime.Parse("03/17/2025"),
+                    Commenter = account3,
+                    PostId = 2
+                };
+                context.Comments.Add(comment); //Queuing a comment to add to db
+
+                context.SaveChanges(); //Saves comments to database
             }
 
         }
